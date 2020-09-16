@@ -44,8 +44,9 @@ class Packages:
     def full_address(self):
         return self._packageAddress + " " + self._packageCity + " " + self._packageState
 
+    # This is useful for testing purposes
     def __repr__(self):
-        template = '{0._packageKey}, {0._packageAddress}, {0._packageCity}, ' \
-                   '{0._packageState}, {0._packageZipCode}, {0._packageDeliveryTime}, ' \
-                   '{0._packageWeight}, {0._packageNotes}'
+        template = "'{0._packageKey}', '{0._packageAddress}', '{0._packageCity}', " \
+                   "'{0._packageState}', '{0._packageZipCode}', '{0._packageDeliveryTime}', " \
+                   "'{0._packageWeight}', '{0._packageNotes}'"
         return template.format(self)
