@@ -8,6 +8,7 @@ with open('Data/PackageFile.csv') as packageFile:
     readCSV = csv.reader(packageFile, delimiter=',')
     packageHashMap = HashTable()
     packageMap = HashTable()
+    packageList = []
     deliveryPackage = Packages()
 
     # Read values from CSV file and added to the custom hash table, where the key
@@ -33,7 +34,7 @@ with open('Data/PackageFile.csv') as packageFile:
         packageWeight = row[6]
         packageNotes = row[7]
 
-        packageList = [deliveryPackage]
+        packageList.append(deliveryPackage)
         packageValues = [packageKey,
                          packageAddress,
                          packageCity,
