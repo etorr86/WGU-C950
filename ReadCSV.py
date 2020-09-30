@@ -1,5 +1,4 @@
 import csv
-import pandas as pd
 
 # Open CSV File
 from Distance import Distance
@@ -33,7 +32,7 @@ class CSVDataLoader:
             counter = 1
 
             # This will loop over all the records and create a list of distances objects
-            # # Space-Time complexity is O(n^2) because nested loop is present.
+            # Space-Time complexity is O(n^2) because nested loop is present.
             for location in locations:
                 for row in location_list[:][1:]:
                     distance = Distance(location, row[0], row[counter])

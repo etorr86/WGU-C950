@@ -6,6 +6,7 @@ class HashTable:
     # Space-Time complexity is O(1).
     def __init__(self):
         self.capacity = INITIAL_SIZE
+        self.hashKeys = []
         self.size = 0
         self.map = [None] * self.capacity
 
@@ -26,6 +27,7 @@ class HashTable:
         # Use the key to find the index
         key_hash = self._get_hash(key)
         key_value = [key, value]
+        self.hashKeys.append(key)
 
         if self.map[key_hash] is None:
             self.map[key_hash] = list([key_value])
@@ -63,6 +65,10 @@ class HashTable:
                 self.map[key_hash].pop(i)
                 self.size -= 1
                 return True
+
+    # Will help iterate over the keys of the hash map.
+    def keys(self):
+        return self.hashKeys
 
     # Helpful for testing the data structure
     def print(self):
