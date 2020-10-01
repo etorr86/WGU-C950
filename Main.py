@@ -1,18 +1,23 @@
 from ReadCSV import CSVDataLoader
 from Truck import Truck
+from Delivery import Delivery
 
 
 def main():
     data_loader = CSVDataLoader()
     wgu_packages = data_loader.load_packages()
+    wgu_distances = data_loader.load_distances()
     truck1, truck2 = arrange_trucks(wgu_packages)
+    delivery = Delivery(wgu_distances, [truck1, truck2])
 
     # Main point of entry, user will have the options to check status of packages
     print('Welcome to WGUPS package tracking platform')
     print("Please enter one of the following options: ")
-    selected_option = input("1) Search Individual Packages"
+    selected_option = input("1) Search Individual Packages by ID"
                             "2) Get Status of all Packages"
-                            "3) Exit the Program")
+                            "3) Select New Time"
+                            "4) Exit the Program"
+                            "Enter Option: ")
 
 
 # this function will arrange packages in trucks

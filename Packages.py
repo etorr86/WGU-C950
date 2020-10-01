@@ -16,6 +16,7 @@ class Packages:
         self._packageDeliveryTime = package_delivery_time
         self._packageWeight = package_weight
         self._packageNotes = package_notes
+        self._status = 'At Hub'
 
     def package_key(self):
         return self._packageKey
@@ -43,6 +44,9 @@ class Packages:
 
     def full_address(self):
         return self._packageAddress + " " + self._packageCity + " " + self._packageState
+
+    def status(self):
+        return self._status
 
     # This is useful for testing purposes
     def __repr__(self):
