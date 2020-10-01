@@ -1,6 +1,11 @@
+import itertools
+
+
 class Truck:
-    def __init__(self, truck, package=None):
-        self._truckId = truck
+    id_generator = itertools.count(1)
+
+    def __init__(self, package=None):
+        self._truckId = next(self.id_generator)
         if package is None:
             package = []
         self._truckPackage = package
@@ -25,4 +30,3 @@ class Truck:
     # Return the Truck Id
     def truck(self):
         return self._truckId
-

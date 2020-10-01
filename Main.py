@@ -8,7 +8,7 @@ def main():
     wgu_packages = data_loader.load_packages()
     wgu_distances = data_loader.load_distances()
     truck1, truck2 = arrange_trucks(wgu_packages)
-    delivery = Delivery(wgu_distances, [truck1, truck2])
+    delivery = Delivery(wgu_distances, 3, wgu_packages)
 
     # Main point of entry, user will have the options to check status of packages
     print('Welcome to WGUPS package tracking platform')
@@ -25,6 +25,7 @@ def main():
 def arrange_trucks(packages):
     truck1 = Truck(1)
     truck2 = Truck(2)
+    truck3 = Truck(3)
     for keyItem in packages.keys():
         if 'Can' in packages.find(keyItem).package_notes():
             truck2.add_package(packages.find(keyItem))
