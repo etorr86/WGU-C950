@@ -7,9 +7,8 @@ def main():
     data_loader = CSVDataLoader()
     wgu_packages = data_loader.load_packages()
     wgu_distances = data_loader.load_distances()
-    truck1, truck2 = arrange_trucks(wgu_packages)
     delivery = Delivery(wgu_distances, 3, wgu_packages)
-
+    delivery.arrange_trucks()
     # Main point of entry, user will have the options to check status of packages
     print('Welcome to WGUPS package tracking platform')
     print("Please enter one of the following options: ")

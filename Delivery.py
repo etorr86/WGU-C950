@@ -1,5 +1,6 @@
 from Truck import Truck
 
+
 class Delivery:
     def __init__(self, distances, trucks, packages):
         self._distancesList = distances
@@ -22,11 +23,6 @@ class Delivery:
         for keyItem in self._packageList.keys():
             if '10:30:00 AM' or '9:00:00 AM' in self._packageList.find(keyItem).package_delivery_time():
                 self._trucksList[0].add_package(self._packageList.find(keyItem))
-            elif 'Wrong' in self._packageList.find(keyItem).package_notes():
+            else:
                 self._trucksList[0].add_package(self._packageList.find(keyItem))
-            elif 'Can' in self._packageList.find(keyItem).package_notes():
-                self._trucksList[1].add_package(self._packageList.find(keyItem))
-            elif len(self._trucksList[2]) <= 16:
-                self._trucksList[2].add_package(self._packageList.find(keyItem))
-
-
+        print(self._trucksList[0])
