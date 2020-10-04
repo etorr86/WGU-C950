@@ -24,5 +24,5 @@ class Delivery:
             if '10:30:00 AM' or '9:00:00 AM' in self._packageList.find(keyItem).package_delivery_time():
                 self._trucksList[0].add_package(self._packageList.find(keyItem))
             else:
-                self._trucksList[0].add_package(self._packageList.find(keyItem))
+                self._trucksList[1].add_package(self._packageList.find(keyItem))
         print(self._trucksList[0])
