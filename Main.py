@@ -19,20 +19,5 @@ def main():
                             "Enter Option: ")
 
 
-# this function will arrange packages in trucks
-# Space-Time complexity is O(n) because loop is present.
-def arrange_trucks(packages):
-    truck1 = Truck(1)
-    truck2 = Truck(2)
-    truck3 = Truck(3)
-    for keyItem in packages.keys():
-        if 'Can' in packages.find(keyItem).package_notes():
-            truck2.add_package(packages.find(keyItem))
-        else:
-            truck1.add_package(packages.find(keyItem))
-
-    return truck1, truck2
-
-
 if __name__ == '__main__':
     main()

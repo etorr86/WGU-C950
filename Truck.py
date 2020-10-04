@@ -18,10 +18,11 @@ class Truck:
     # Time-Complexity is O(n) because there is a loop present
     def package(self, packageId):
         for package in self._truckPackage:
-            if package.package_key() == packageId:
-                return package
+            if package.package_key() != packageId:
+                continue
             else:
-                return None
+                return package
+        return None
 
     # Add package to the list of packages
     def add_package(self, package):
