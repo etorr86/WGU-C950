@@ -4,8 +4,9 @@ import itertools
 class Truck:
     id_generator = itertools.count(1)
 
-    def __init__(self, package=None):
+    def __init__(self, package=None, startTime=None):
         self._truckId = next(self.id_generator)
+        self._truckStartTime = startTime
         if package is None:
             package = []
         self._truckPackage = package
@@ -28,6 +29,18 @@ class Truck:
     def add_package(self, package):
         self._truckPackage.append(package)
 
+    def remove_package(self, package):
+        removed_package = self._truckPackage.index(package)
+        self._truckPackage.pop(removed_package)
+
+
     # Return the Truck Id
     def truck(self):
         return self._truckId
+
+    # Return the truck start time
+    def truck_start_time(self):
+        return self._truckStartTime
+
+    def add_start_time(self, startTime):
+        self._truckStartTime = startTime

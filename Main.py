@@ -8,7 +8,7 @@ def main():
     wgu_packages = data_loader.load_packages()
     wgu_distances = data_loader.load_distances()
     delivery = Delivery(wgu_distances, 3, wgu_packages)
-    delivery.arrange_trucks()
+    delivery.start_delivery()
     # Main point of entry, user will have the options to check status of packages
     print('Welcome to WGUPS package tracking platform')
     print("Please enter one of the following options: ")
