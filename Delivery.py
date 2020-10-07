@@ -74,6 +74,7 @@ class Delivery:
                         self.optimize_delivery(current, truck, optimizedTruck)
             except IndexError:
                 pass
+            return optimizedTruck
 
     # Takes from and to addresses and return the distance between them
     def check_distance(self, fromAddr, toAddr):
