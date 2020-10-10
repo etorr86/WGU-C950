@@ -15,7 +15,16 @@ class Delivery:
     def get_status(self):
         return 'self.status'
 
+    # Loop over the optimized truck list then add and return their total distance
+    # Time-Complexity is O(n) because a loop is present.
+    def get_total_distance(self):
+        total_distance = 0
+        for truck in self._optimizedTruckList:
+            total_distance += truck.total_distance()
+        return "{0:.2f}".format(total_distance, 2)
+
     # main delivery function
+    # Time-Complexity is O(n) because a loop is present.
     def start_delivery(self):
         self.arrange_trucks()
         # Call a function to optimized each truck
@@ -24,7 +33,6 @@ class Delivery:
             optimized_truck.add_start_time(truck.truck_start_time())
             ready_truck = self.optimize_delivery(HUB, truck, optimized_truck)
             self._optimizedTruckList.append(ready_truck)
-            print('I got here yey')
         return "Delivery"
 
     # Algorithm to arrange trucks
@@ -55,6 +63,7 @@ class Delivery:
                     self._trucksList[2].add_package(self._packageList.find(keyItem))
 
     # This is the base algorithm to optimized the packages for each truck
+    # c even though there are two loops they are not nested.
     def optimize_delivery(self, current, truck, optimizedTruck):
         if (len(truck.package_list())) == 0:
             return optimizedTruck
@@ -67,8 +76,10 @@ class Delivery:
                         lowest_value = self.check_distance(current, package.package_address())
                         new_location = package.package_address()
                 for package in truck.package_list():
-                    if self.check_distance(current, package.package_address()) == lowest_value:
+                    distance = self.check_distance(current, package.package_address())
+                    if distance == lowest_value:
                         optimizedTruck.add_package(package)
+                        optimizedTruck.add_distance(distance)
                         truck.remove_package(package)
                         current = new_location
                         self.optimize_delivery(current, truck, optimizedTruck)
@@ -77,6 +88,7 @@ class Delivery:
             return optimizedTruck
 
     # Takes from and to addresses and return the distance between them
+    # Time-Complexity is O(n) because a loop is present.
     def check_distance(self, fromAddr, toAddr):
         for distances in self._distancesList:
             if (fromAddr in distances.address_from()) and (toAddr in distances.address_to()):
@@ -84,6 +96,7 @@ class Delivery:
             continue
 
     # Convert times into DateTime format
+    # Time-Complexity is O(1)
     def time_convertion(self):
         # the operations below convert the string time into a datetime.timedelta
         (h, m, s) = '8:00:00'.split(':')

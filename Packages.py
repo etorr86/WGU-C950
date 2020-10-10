@@ -1,3 +1,6 @@
+import datetime
+
+
 class Packages:
     def __init__(self,
                  package_key=None,
@@ -17,6 +20,7 @@ class Packages:
         self._packageWeight = package_weight
         self._packageNotes = package_notes
         self._status = 'At Hub'
+        self._deliveredAt = datetime.timedelta()
 
     def package_key(self):
         return self._packageKey

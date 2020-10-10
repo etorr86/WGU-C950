@@ -7,6 +7,7 @@ class Truck:
     def __init__(self, package=None, startTime=None):
         self._truckId = next(self.id_generator)
         self._truckStartTime = startTime
+        self._totalDistance = 0
         if package is None:
             package = []
         self._truckPackage = package
@@ -33,10 +34,16 @@ class Truck:
         removed_package = self._truckPackage.index(package)
         self._truckPackage.pop(removed_package)
 
-
     # Return the Truck Id
     def truck(self):
         return self._truckId
+
+    def total_distance(self):
+        return self._totalDistance
+
+    def add_distance(self, distance):
+        self._totalDistance += distance
+        return self._totalDistance
 
     # Return the truck start time
     def truck_start_time(self):
