@@ -2,6 +2,7 @@ from Truck import Truck
 import datetime
 
 HUB = "4001 South 700 East"
+SPEED = 18
 
 
 class Delivery:
@@ -12,7 +13,10 @@ class Delivery:
         self._optimizedTruckList = []
         self._packageList = packages
 
-    def get_status(self):
+    def get_status_by_time(self, time):
+        return 'self.status'
+
+    def get_status_by_package(self, package, time):
         return 'self.status'
 
     # Loop over the optimized truck list then add and return their total distance
@@ -31,8 +35,13 @@ class Delivery:
         for truck in self._trucksList:
             optimized_truck = Truck()
             optimized_truck.add_start_time(truck.truck_start_time())
+            optimized_truck.add_time_to_delivery_map(truck.truck_start_time())
             ready_truck = self.optimize_delivery(HUB, truck, optimized_truck)
             self._optimizedTruckList.append(ready_truck)
+
+        # call function to put times for each package delivered
+        for truck in self._optimizedTruckList:
+            self.set_delivery_time(truck)
         return "Delivery"
 
     # Algorithm to arrange trucks
@@ -43,6 +52,9 @@ class Delivery:
         self._trucksList[0].add_start_time(first_time)
         self._trucksList[1].add_start_time(second_time)
         self._trucksList[2].add_start_time(third_time)
+        self._trucksList[0].add_time_to_delivery_map(first_time)
+        self._trucksList[1].add_time_to_delivery_map(second_time)
+        self._trucksList[2].add_time_to_delivery_map(third_time)
         self._trucksList[0].add_package(self._packageList.find('19'))
         self._trucksList[1].add_package(self._packageList.find('2'))
         self._trucksList[1].add_package(self._packageList.find('5'))
@@ -63,7 +75,7 @@ class Delivery:
                     self._trucksList[2].add_package(self._packageList.find(keyItem))
 
     # This is the base algorithm to optimized the packages for each truck
-    # c even though there are two loops they are not nested.
+    # even though there are two loops they are not nested.
     def optimize_delivery(self, current, truck, optimizedTruck):
         if (len(truck.package_list())) == 0:
             return optimizedTruck
@@ -95,6 +107,15 @@ class Delivery:
                 return float(distances.distance())
             continue
 
+    def set_delivery_time(self, truck):
+        current = HUB
+        for package in truck.package_list():
+            distance = self.check_distance(current,
+                                           package.package_address())
+            delivered_at = self.time_delivery(truck, distance)
+            package.set_package_delivery_time(delivered_at)
+            current = package.package_address()
+
     # Convert times into DateTime format
     # Time-Complexity is O(1)
     def time_convertion(self):
@@ -106,3 +127,14 @@ class Delivery:
         (h, m, s) = '11:00:00'.split(':')
         convert_third_time = datetime.timedelta(hours=int(h), minutes=int(m), seconds=int(s))
         return convert_first_time, convert_second_time, convert_third_time
+
+    def time_delivery(self, truck, distance):
+        create_time = distance / SPEED
+        distance_min = '{0:02.0f}:{1:02.0f}'.format(*divmod(create_time * 60, 60)) + ':00'
+        (h, m, s) = distance_min.split(':')
+        d = datetime.timedelta(hours=int(h), minutes=int(m), seconds=int(s))
+        truck.add_time_to_delivery_map(d)
+        sum = datetime.timedelta()
+        for times in truck.get_time_map():
+            sum += times
+        return sum

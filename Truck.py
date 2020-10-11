@@ -8,6 +8,7 @@ class Truck:
         self._truckId = next(self.id_generator)
         self._truckStartTime = startTime
         self._totalDistance = 0
+        self.truckDeliveryMapTimes = []
         if package is None:
             package = []
         self._truckPackage = package
@@ -51,3 +52,9 @@ class Truck:
 
     def add_start_time(self, startTime):
         self._truckStartTime = startTime
+
+    def add_time_to_delivery_map(self, time):
+        self.truckDeliveryMapTimes.append(time)
+
+    def get_time_map(self):
+        return self.truckDeliveryMapTimes

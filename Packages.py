@@ -52,6 +52,14 @@ class Packages:
     def status(self):
         return self._status
 
+    def delivered_at(self):
+        return self._deliveredAt
+
+    def set_package_delivery_time(self, time):
+        self._deliveredAt = time
+        return self._deliveredAt
+
+
     # This is useful for testing purposes
     def __repr__(self):
         template = "'{0._packageKey}', '{0._packageAddress}', '{0._packageCity}', " \
