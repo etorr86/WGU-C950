@@ -1,4 +1,5 @@
 from Truck import Truck
+from Utils import (TruckStatus, StatusKeyWord, Templates)
 import datetime
 
 HUB = "4001 South 700 East"
@@ -12,12 +13,34 @@ class Delivery:
         self._trucksList = [Truck() for truck in range(trucks)]
         self._optimizedTruckList = []
         self._packageList = packages
+        self._optimizedTruckDict = {}
 
     def get_status_by_time(self, time):
-        return 'self.status'
+        convert_user_time = self.time_convertion(time)
+        for key in self._packageList.keys():
+            package = self._packageList.find(key)
+            delivered_time = package.delivered_at()
+            started_time = self._optimizedTruckDict.get(package.get_truck_id()).truck_start_time()
+            print(self.get_status(package, started_time, convert_user_time, delivered_time))
 
     def get_status_by_package(self, package, time):
-        return 'self.status'
+        package_selected = self._packageList.find(package)
+        delivered_time = package_selected.delivered_at()
+        started_time = self._optimizedTruckDict.get(package_selected.get_truck_id()).truck_start_time()
+        convert_user_time = self.time_convertion(time)
+        print(self.get_status(package_selected, started_time, convert_user_time, delivered_time))
+
+    def get_status(self, package, started_time, convert_user_time, delivered_time):
+        if started_time >= convert_user_time:
+            package.set_status(TruckStatus.atHub)
+            return Templates.package_status(package, started_time, StatusKeyWord.leaves)
+        elif started_time <= convert_user_time:
+            if convert_user_time < delivered_time:
+                package.set_status(TruckStatus.inTransit)
+                return Templates.package_status(package, started_time, StatusKeyWord.left)
+            else:
+                package.set_status(TruckStatus.delivered)
+                return Templates.package_status(package, started_time, StatusKeyWord.left)
 
     # Loop over the optimized truck list then add and return their total distance
     # Time-Complexity is O(n) because a loop is present.
@@ -38,6 +61,7 @@ class Delivery:
             optimized_truck.add_time_to_delivery_map(truck.truck_start_time())
             ready_truck = self.optimize_delivery(HUB, truck, optimized_truck)
             self._optimizedTruckList.append(ready_truck)
+            self._optimizedTruckDict[truck.truck()] = ready_truck
 
         # call function to put times for each package delivered
         for truck in self._optimizedTruckList:
@@ -48,13 +72,13 @@ class Delivery:
     # Time-Complexity is O(n) because a loop is present.
     def arrange_trucks(self):
         # add starting delivery times to each truck
-        first_time, second_time, third_time = self.time_convertion()
-        self._trucksList[0].add_start_time(first_time)
-        self._trucksList[1].add_start_time(second_time)
-        self._trucksList[2].add_start_time(third_time)
-        self._trucksList[0].add_time_to_delivery_map(first_time)
-        self._trucksList[1].add_time_to_delivery_map(second_time)
-        self._trucksList[2].add_time_to_delivery_map(third_time)
+        truck_times = self.time_convertion(['8:00:00', '9:10:00', '11:00:00'])
+        self._trucksList[0].add_start_time(truck_times[0])
+        self._trucksList[1].add_start_time(truck_times[1])
+        self._trucksList[2].add_start_time(truck_times[2])
+        self._trucksList[0].add_time_to_delivery_map(truck_times[0])
+        self._trucksList[1].add_time_to_delivery_map(truck_times[1])
+        self._trucksList[2].add_time_to_delivery_map(truck_times[2])
         self._trucksList[0].add_package(self._packageList.find('19'))
         self._trucksList[1].add_package(self._packageList.find('2'))
         self._trucksList[1].add_package(self._packageList.find('5'))
@@ -87,6 +111,7 @@ class Delivery:
                     if self.check_distance(current, package.package_address()) < lowest_value:
                         lowest_value = self.check_distance(current, package.package_address())
                         new_location = package.package_address()
+                    package.set_truck_id(truck.truck())
                 for package in truck.package_list():
                     distance = self.check_distance(current, package.package_address())
                     if distance == lowest_value:
@@ -117,16 +142,23 @@ class Delivery:
             current = package.package_address()
 
     # Convert times into DateTime format
-    # Time-Complexity is O(1)
-    def time_convertion(self):
-        # the operations below convert the string time into a datetime.timedelta
-        (h, m, s) = '8:00:00'.split(':')
-        convert_first_time = datetime.timedelta(hours=int(h), minutes=int(m), seconds=int(s))
-        (h, m, s) = '9:10:00'.split(':')
-        convert_second_time = datetime.timedelta(hours=int(h), minutes=int(m), seconds=int(s))
-        (h, m, s) = '11:00:00'.split(':')
-        convert_third_time = datetime.timedelta(hours=int(h), minutes=int(m), seconds=int(s))
-        return convert_first_time, convert_second_time, convert_third_time
+    # Time-Complexity is O(n)
+    def time_convertion(self, times):
+        time_list = []
+        if type(times) is list:
+            for time in times:
+                try:
+                    (h, m, s) = time.split(':')
+                    convert_time = datetime.timedelta(hours=int(h), minutes=int(m), seconds=int(s))
+                    time_list.append(convert_time)
+                except ValueError:
+                    print('Invalid entry')
+                    exit()
+            return time_list
+        else:
+            (h, m, s) = times.split(':')
+            convert_time = datetime.timedelta(hours=int(h), minutes=int(m), seconds=int(s))
+            return convert_time
 
     def time_delivery(self, truck, distance):
         create_time = distance / SPEED

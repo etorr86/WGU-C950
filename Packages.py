@@ -1,5 +1,5 @@
 import datetime
-
+from Utils import TruckStatus
 
 class Packages:
     def __init__(self,
@@ -19,7 +19,8 @@ class Packages:
         self._packageDeliveryTime = package_delivery_time
         self._packageWeight = package_weight
         self._packageNotes = package_notes
-        self._status = 'At Hub'
+        self._status = TruckStatus.atHub
+        self._truck = None
         self._deliveredAt = datetime.timedelta()
 
     def package_key(self):
@@ -47,18 +48,26 @@ class Packages:
         return self._packageNotes
 
     def full_address(self):
-        return self._packageAddress + " " + self._packageCity + " " + self._packageState
+        return self._packageAddress + " " + self._packageCity + " " + self._packageState + " " + self._packageZipCode
 
     def status(self):
         return self._status
 
+    def set_status(self, status):
+        self._status = status
+
     def delivered_at(self):
         return self._deliveredAt
+
+    def set_truck_id(self, truckid):
+        self._truck = truckid
+
+    def get_truck_id(self):
+        return self._truck
 
     def set_package_delivery_time(self, time):
         self._deliveredAt = time
         return self._deliveredAt
-
 
     # This is useful for testing purposes
     def __repr__(self):

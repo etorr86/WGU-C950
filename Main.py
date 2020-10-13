@@ -1,5 +1,5 @@
 from ReadCSV import CSVDataLoader
-from Truck import Truck
+from Utils import (SelectedOptions, Templates)
 from Delivery import Delivery
 
 
@@ -9,15 +9,32 @@ def main():
     wgu_distances = data_loader.load_distances()
     delivery = Delivery(wgu_distances, 3, wgu_packages)
     delivery.start_delivery()
-    print("Total distance: ", delivery.get_total_distance())
+    Templates.miles_traveled(delivery.get_total_distance())
     # Main point of entry, user will have the options to check status of packages
-    print('Welcome to WGUPS package tracking platform')
-    print("Please enter one of the following options: ")
-    selected_option = input("1) Search Individual Packages by ID"
-                            "2) Get Status of all Packages"
-                            "3) Select New Time"
-                            "4) Exit the Program"
-                            "Enter Option: ")
+    Templates.welcome()
+    selected_option = int(input(Templates.menu_template()))
+
+    while selected_option != SelectedOptions.exitProgram:
+        if selected_option == SelectedOptions.individualPackages:
+            try:
+                package_id = input(Templates.package_lookup())
+                package_time = input(Templates.package_time())
+                delivery.get_status_by_package(package_id, package_time)
+            except ValueError:
+                print('Invalid entry')
+                exit()
+        elif selected_option == SelectedOptions.getAllPackagesStatus:
+            try:
+                package_time = input(Templates.package_time())
+                delivery.get_status_by_time(package_time)
+            except ValueError:
+                print('Invalid entry')
+                exit()
+        elif selected_option == SelectedOptions.exitProgram:
+            exit()
+        else:
+            print("Invalid Value")
+            exit()
 
 
 if __name__ == '__main__':
