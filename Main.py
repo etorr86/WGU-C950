@@ -1,9 +1,12 @@
+# Edward Torres Student ID #:  001164787
+
 from ReadCSV import CSVDataLoader
 from Utils import (SelectedOptions, Templates)
 from Delivery import Delivery
 
 
 def main():
+    # Load data and start delivery
     data_loader = CSVDataLoader()
     wgu_packages = data_loader.load_packages()
     wgu_distances = data_loader.load_distances()
@@ -14,6 +17,7 @@ def main():
     Templates.welcome()
     selected_option = int(input(Templates.menu_template()))
 
+    # logic for selecting how you want to look at the packages.
     while selected_option != SelectedOptions.exitProgram:
         if selected_option == SelectedOptions.individualPackages:
             try:

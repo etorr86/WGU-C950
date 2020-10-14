@@ -1,5 +1,5 @@
 from Truck import Truck
-from Utils import (TruckStatus, StatusKeyWord, Templates)
+from Utils import (TruckStatus, StatusKeyWord, Templates, time_conversion)
 import datetime
 
 HUB = "4001 South 700 East"
@@ -15,21 +15,27 @@ class Delivery:
         self._packageList = packages
         self._optimizedTruckDict = {}
 
+    # Using the time it will loop and get the status of all packages.
+    # Time-Complexity is O(n) because a loop is present.
     def get_status_by_time(self, time):
-        convert_user_time = self.time_convertion(time)
+        convert_user_time = time_conversion(time)
         for key in self._packageList.keys():
             package = self._packageList.find(key)
             delivered_time = package.delivered_at()
             started_time = self._optimizedTruckDict.get(package.get_truck_id()).truck_start_time()
             print(self.get_status(package, started_time, convert_user_time, delivered_time))
 
+    # Using the package and time it will get the status of a single packages.
+    # Time-Complexity is O(1).
     def get_status_by_package(self, package, time):
         package_selected = self._packageList.find(package)
         delivered_time = package_selected.delivered_at()
         started_time = self._optimizedTruckDict.get(package_selected.get_truck_id()).truck_start_time()
-        convert_user_time = self.time_convertion(time)
+        convert_user_time = time_conversion(time)
         print(self.get_status(package_selected, started_time, convert_user_time, delivered_time))
 
+    # Main status function, this function gets called by the two previous ones.
+    # Time-Complexity is O(1).
     def get_status(self, package, started_time, convert_user_time, delivered_time):
         if started_time >= convert_user_time:
             package.set_status(TruckStatus.atHub)
@@ -66,40 +72,55 @@ class Delivery:
         # call function to put times for each package delivered
         for truck in self._optimizedTruckList:
             self.set_delivery_time(truck)
-        return "Delivery"
 
-    # Algorithm to arrange trucks
+    # Algorithm to arrange trucks and set the times to start delivering packages
     # Time-Complexity is O(n) because a loop is present.
     def arrange_trucks(self):
         # add starting delivery times to each truck
-        truck_times = self.time_convertion(['8:00:00', '9:10:00', '11:00:00'])
+        truck_times = time_conversion(['8:00:00', '9:10:00', '11:00:00'])
         self._trucksList[0].add_start_time(truck_times[0])
         self._trucksList[1].add_start_time(truck_times[1])
         self._trucksList[2].add_start_time(truck_times[2])
         self._trucksList[0].add_time_to_delivery_map(truck_times[0])
         self._trucksList[1].add_time_to_delivery_map(truck_times[1])
         self._trucksList[2].add_time_to_delivery_map(truck_times[2])
-        self._trucksList[0].add_package(self._packageList.find('19'))
-        self._trucksList[1].add_package(self._packageList.find('2'))
-        self._trucksList[1].add_package(self._packageList.find('5'))
-        self._trucksList[1].add_package(self._packageList.find('8'))
-        self._trucksList[1].add_package(self._packageList.find('24'))
 
         for keyItem in self._packageList.keys():
-            if '10' in self._packageList.find(keyItem).package_delivery_time():
-                self._trucksList[0].add_package(self._packageList.find(keyItem))
-            elif '9' in self._packageList.find(keyItem).package_delivery_time():
-                self._trucksList[0].add_package(self._packageList.find(keyItem))
-            elif 'Wrong' in self._packageList.find(keyItem).package_notes():
-                self._trucksList[0].add_package(self._packageList.find(keyItem))
+            if 'EOD' in self._packageList.find(keyItem).package_delivery_time() and len(
+                    self._trucksList[2].package_list()) < 16 and 'Can' not in self._packageList.find(
+                    keyItem).package_notes() and keyItem != '19':
+                if 'Wrong' in self._packageList.find(keyItem).package_notes():
+                    wrong_addr_package = self._packageList.find(keyItem)
+                    wrong_addr_package.set_package_addr('410 S State St')
+                    wrong_addr_package.set_package_city('Salt Lake City')
+                    wrong_addr_package.set_package_state('UT')
+                    wrong_addr_package.set_package_zip('84111')
+                    self._trucksList[2].add_package(self._packageList.find(keyItem))
+                else:
+                    self._trucksList[2].add_package(self._packageList.find(keyItem))
+            elif 'Delayed' in self._packageList.find(keyItem).package_notes():
+                self._trucksList[1].add_package(self._packageList.find(keyItem))
             elif 'Can' in self._packageList.find(keyItem).package_notes():
                 self._trucksList[1].add_package(self._packageList.find(keyItem))
+            elif '10' in self._packageList.find(keyItem).package_delivery_time() and len(
+                    self._trucksList[0].package_list()) < 16:
+                self._trucksList[0].add_package(self._packageList.find(keyItem))
+            elif '10' in self._packageList.find(keyItem).package_delivery_time() and len(
+                    self._trucksList[1].package_list()) < 16:
+                self._trucksList[1].add_package(self._packageList.find(keyItem))
+            elif '9' in self._packageList.find(keyItem).package_delivery_time() and len(
+                    self._trucksList[0].package_list()) < 16:
+                self._trucksList[0].add_package(self._packageList.find(keyItem))
+            elif len(self._trucksList[0].package_list()) < 16:
+                self._trucksList[0].add_package(self._packageList.find(keyItem))
             elif len(self._trucksList[2].package_list()) < 16:
-                if (self._trucksList[0].package(keyItem) is None) and (self._trucksList[1].package(keyItem) is None):
-                    self._trucksList[2].add_package(self._packageList.find(keyItem))
+                self._trucksList[2].add_package(self._packageList.find(keyItem))
+            else:
+                self._trucksList[1].add_package(self._packageList.find(keyItem))
 
     # This is the base algorithm to optimized the packages for each truck
-    # even though there are two loops they are not nested.
+    # even though there are two loops they are not nested, so the time complexity is O(n)
+    # for more information refer to the documentation.
     def optimize_delivery(self, current, truck, optimizedTruck):
         if (len(truck.package_list())) == 0:
             return optimizedTruck
@@ -132,6 +153,8 @@ class Delivery:
                 return float(distances.distance())
             continue
 
+    # Set the delivery times for each package
+    # Time-Complexity is O(n) because a loop is present.
     def set_delivery_time(self, truck):
         current = HUB
         for package in truck.package_list():
@@ -141,25 +164,8 @@ class Delivery:
             package.set_package_delivery_time(delivered_at)
             current = package.package_address()
 
-    # Convert times into DateTime format
-    # Time-Complexity is O(n)
-    def time_convertion(self, times):
-        time_list = []
-        if type(times) is list:
-            for time in times:
-                try:
-                    (h, m, s) = time.split(':')
-                    convert_time = datetime.timedelta(hours=int(h), minutes=int(m), seconds=int(s))
-                    time_list.append(convert_time)
-                except ValueError:
-                    print('Invalid entry')
-                    exit()
-            return time_list
-        else:
-            (h, m, s) = times.split(':')
-            convert_time = datetime.timedelta(hours=int(h), minutes=int(m), seconds=int(s))
-            return convert_time
-
+    # Do the necessary calculations to get the delivery time from the distance and speed.
+    # Time-Complexity is O(n) because a loop is present.
     def time_delivery(self, truck, distance):
         create_time = distance / SPEED
         distance_min = '{0:02.0f}:{1:02.0f}'.format(*divmod(create_time * 60, 60)) + ':00'

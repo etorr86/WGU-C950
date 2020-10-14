@@ -1,3 +1,4 @@
+# distance class, it acts as a model to use for the distance between packages.
 class Distance:
     def __init__(self, address_from, address_to, distance):
         self._addressFrom = address_from,

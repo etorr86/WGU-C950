@@ -1,6 +1,8 @@
 import datetime
 from Utils import TruckStatus
 
+
+# package class, it acts as a model to use for the packages.
 class Packages:
     def __init__(self,
                  package_key=None,
@@ -29,14 +31,26 @@ class Packages:
     def package_address(self):
         return self._packageAddress
 
+    def set_package_addr(self, addr):
+        self._packageAddress = addr
+
     def package_city(self):
         return self._packageCity
+
+    def set_package_city(self, city):
+        self._packageCity = city
 
     def package_state(self):
         return self._packageState
 
+    def set_package_state(self, state):
+        self._packageState = state
+
     def package_zip_code(self):
         return self._packageZipCode
+
+    def set_package_zip(self, zipCode):
+        self._packageZipCode = zipCode
 
     def package_delivery_time(self):
         return self._packageDeliveryTime

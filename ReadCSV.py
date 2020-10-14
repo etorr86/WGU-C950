@@ -6,9 +6,10 @@ from HashTable import HashTable
 from Packages import Packages
 
 
+# Class used for loading every file needed in the application
 class CSVDataLoader:
 
-    # function that gets call to return a list of package objects into a hash table
+    # function that gets call to return a list of package objects into a custom hash table
     def load_packages(self):
         with open('Data/PackageFile.csv') as packageFile:
             read_package_csv = csv.reader(packageFile, delimiter=',')
