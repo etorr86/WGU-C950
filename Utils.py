@@ -1,5 +1,8 @@
 from enum import (IntEnum, Enum)
+import datetime
 
+
+# Utilities that will help with the overall structure of the code
 
 class SelectedOptions(IntEnum):
     individualPackages = 1
@@ -18,6 +21,7 @@ class StatusKeyWord(str, Enum):
     leaves = "Leaves at"
 
 
+# This templates are called when wanting to print something.
 class Templates:
 
     @staticmethod
@@ -61,3 +65,23 @@ class Templates:
     def package_time():
         package_time = "Please enter a time in the HH:MM:SS format: "
         return package_time
+
+
+# Convert times into DateTime format
+# Time-Complexity is O(n)
+def time_conversion(times):
+    time_list = []
+    if type(times) is list:
+        for time in times:
+            try:
+                (h, m, s) = time.split(':')
+                convert_time = datetime.timedelta(hours=int(h), minutes=int(m), seconds=int(s))
+                time_list.append(convert_time)
+            except ValueError:
+                print('Invalid entry')
+                exit()
+        return time_list
+    else:
+        (h, m, s) = times.split(':')
+        convert_time = datetime.timedelta(hours=int(h), minutes=int(m), seconds=int(s))
+        return convert_time

@@ -1,6 +1,7 @@
 import itertools
 
 
+# truck class, it acts as a model to use for the loading packages into it.
 class Truck:
     id_generator = itertools.count(1)
 
